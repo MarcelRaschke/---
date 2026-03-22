@@ -6,6 +6,10 @@
 # OpenClaw local data
 .openclaw/
 workspace/
+backups/
+
+# TLS certificates
+nginx/certs/
 
 # Node.js
 node_modules/

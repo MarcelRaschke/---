@@ -1,0 +1,35 @@
+# Production Docker Compose with nginx reverse proxy and TLS
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Prerequisites:
+#   - Place your TLS cert at nginx/certs/fullchain.pem
+#   - Place your TLS key at nginx/certs/privkey.pem
+#   - Or use the Caddy alternative below (auto-TLS via Let's Encrypt)
+
+services:
+  openclaw:
+    # Override: bind only to localhost, nginx handles external traffic
+    ports: !override
+      - "127.0.0.1:18789:18789"
+      - "127.0.0.1:18790:18790"
+    environment:
+      - OPENCLAW_GATEWAY_BIND=localhost
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  nginx:
+    image: nginx:alpine
+    container_name: openclaw-proxy
+    restart: unless-stopped
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      openclaw:
+        condition: service_healthy

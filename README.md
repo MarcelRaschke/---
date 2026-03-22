@@ -72,6 +72,57 @@ OpenClaw supports communication through channels you already use:
 | Matrix | Supported |
 | IRC | Supported |
 
+## Makefile Commands
+
+If you have `make` installed, use these shortcuts:
+
+```bash
+make setup      # Create .env and workspace directory
+make start      # Start via Docker Compose
+make stop       # Stop containers
+make restart    # Restart containers
+make logs       # Tail logs
+make status     # Show container status
+make health     # Check gateway health endpoint
+make update     # Pull latest image and restart
+make clean      # Remove containers and workspace (destructive)
+```
+
+## Production Deployment
+
+For production use with TLS, use the production overlay:
+
+```bash
+# Place your TLS certificates
+mkdir -p nginx/certs
+cp /path/to/fullchain.pem nginx/certs/
+cp /path/to/privkey.pem nginx/certs/
+
+# Start with production config
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+This adds an nginx reverse proxy with HTTPS, restricts OpenClaw to localhost binding, and configures log rotation. See [`nginx/nginx.conf`](nginx/nginx.conf) for the proxy configuration.
+
+## Maintenance
+
+### Update
+
+```bash
+./scripts/update.sh       # Auto-detects Docker or native install
+# or
+make update               # Docker only
+```
+
+### Backup
+
+```bash
+./scripts/backup.sh                  # Backs up to ./backups/
+./scripts/backup.sh /path/to/dest    # Custom backup location
+```
+
+Keeps the last 10 backups automatically.
+
 ## Useful Commands
 
 ```bash
