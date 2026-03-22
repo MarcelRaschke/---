@@ -1,0 +1,38 @@
+# OpenClaw systemd service unit
+# For native (non-Docker) installations on Linux
+#
+# Install:
+#   sudo cp systemd/openclaw.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now openclaw
+#
+# Logs:
+#   journalctl -u openclaw -f
+
+[Unit]
+Description=OpenClaw AI Assistant Gateway
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=openclaw
+Group=openclaw
+WorkingDirectory=/home/openclaw
+ExecStart=/usr/bin/env openclaw gateway --port 18789
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=5
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/openclaw/.openclaw
+PrivateTmp=true
+
+# Environment
+EnvironmentFile=-/home/openclaw/.env
+
+[Install]
+WantedBy=multi-user.target

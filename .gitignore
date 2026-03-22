@@ -11,6 +11,10 @@ backups/
 # TLS certificates
 nginx/certs/
 
+# Monitoring data
+prometheus_data/
+grafana_data/
+
 # Node.js
 node_modules/
 dist/

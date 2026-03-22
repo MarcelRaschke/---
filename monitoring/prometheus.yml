@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+scrape_configs:
+  - job_name: 'openclaw-gateway'
+    metrics_path: /healthz
+    static_configs:
+      - targets: ['openclaw:18789']
+    scrape_interval: 15s
