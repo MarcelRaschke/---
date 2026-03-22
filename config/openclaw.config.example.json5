@@ -1,0 +1,62 @@
+// OpenClaw Configuration
+// Copy this file to openclaw.config.json5 and customize as needed.
+// See: https://docs.openclaw.ai/configuration
+{
+  // AI Model Providers
+  // Configure at least one provider (or use Ollama for offline operation)
+  "models": {
+    "default": "anthropic:claude-sonnet-4-20250514",
+    "providers": {
+      "anthropic": {
+        // API key can also be set via ANTHROPIC_API_KEY env var
+        "apiKey": "${ANTHROPIC_API_KEY}"
+      },
+      "openai": {
+        "apiKey": "${OPENAI_API_KEY}"
+      },
+      // Uncomment for local/offline operation with Ollama
+      // "ollama": {
+      //   "baseUrl": "http://localhost:11434",
+      //   "models": ["llama3.1", "mistral"]
+      // }
+    }
+  },
+
+  // Gateway Settings
+  "gateway": {
+    "port": 18789,
+    "bind": "localhost"
+  },
+
+  // Channel Integrations
+  // Uncomment and configure the channels you want to use
+  "channels": {
+    // "whatsapp": {
+    //   "enabled": true
+    // },
+    // "telegram": {
+    //   "enabled": true,
+    //   "botToken": "your-telegram-bot-token"
+    // },
+    // "slack": {
+    //   "enabled": true,
+    //   "appToken": "xapp-...",
+    //   "botToken": "xoxb-..."
+    // },
+    // "discord": {
+    //   "enabled": true,
+    //   "botToken": "your-discord-bot-token"
+    // }
+  },
+
+  // Skills Configuration
+  "skills": {
+    "enabled": true,
+    "autoActivate": true
+  },
+
+  // Sandbox Mode
+  "sandbox": {
+    "mode": "off"
+  }
+}
