@@ -104,48 +104,40 @@ check_docker && HAS_DOCKER=true
 
 if [ "$HAS_NODE" = false ] && [ "$HAS_DOCKER" = false ]; then
     error "Neither Node.js 22+ nor Docker found."
-    error "Please install one of them first:"
-    error "  Node.js: https://nodejs.org/"
-    error "  Docker:  https://docs.docker.com/get-docker/"
+    echo "  Install Node.js: https://nodejs.org/"
+    echo "  Install Docker:  https://docs.docker.com/get-docker/"
     exit 1
 fi
 
 setup_env
 setup_workspace
 
+# Build menu options dynamically based on available tools
+declare -A MENU_ACTIONS
 echo ""
 echo "How would you like to install OpenClaw?"
 echo ""
-
+opt=1
 if [ "$HAS_NODE" = true ]; then
-    echo "  1) Native (npm install -g openclaw)"
+    echo "  $opt) Native (npm install -g openclaw)"
+    MENU_ACTIONS[$opt]="native"
+    ((opt++))
 fi
 if [ "$HAS_DOCKER" = true ]; then
-    echo "  2) Docker (docker compose up)"
+    echo "  $opt) Docker (docker compose up)"
+    MENU_ACTIONS[$opt]="docker"
+    ((opt++))
 fi
-echo "  3) Skip installation (just configure)"
+echo "  $opt) Skip installation (just configure)"
+MENU_ACTIONS[$opt]="skip"
 echo ""
 
-read -rp "Choose [1/2/3]: " choice
+read -rp "Choose [1-$opt]: " choice
 
-case "$choice" in
-    1)
-        if [ "$HAS_NODE" = true ]; then
-            install_native
-        else
-            error "Node.js is not available"
-            exit 1
-        fi
-        ;;
-    2)
-        if [ "$HAS_DOCKER" = true ]; then
-            install_docker
-        else
-            error "Docker is not available"
-            exit 1
-        fi
-        ;;
-    3)
+case "${MENU_ACTIONS[$choice]:-}" in
+    native) install_native ;;
+    docker) install_docker ;;
+    skip)
         info "Skipping installation. Configuration files are ready."
         info "Run 'npm install -g openclaw@latest' or 'docker compose up -d' when ready."
         ;;
