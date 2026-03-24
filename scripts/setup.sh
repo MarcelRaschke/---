@@ -85,12 +85,42 @@ install_clawhub() {
     info "ClawHub CLI installed"
 }
 
+# --- Install ClawShield (security scanner) ---
+
+install_clawshield() {
+    if command -v clawshield &>/dev/null; then
+        info "ClawShield already installed ($(clawshield --version 2>/dev/null || echo 'unknown version'))"
+        return 0
+    fi
+    info "Installing ClawShield security scanner..."
+    npm install -g clawshield
+    info "ClawShield installed"
+}
+
+# --- Install Skill Defender from ClawHub ---
+
+install_skill_defender() {
+    if [ -d "$PROJECT_DIR/skills/itsclawdbro/skill-defender" ]; then
+        info "Skill Defender already installed"
+        return 0
+    fi
+    if command -v clawhub &>/dev/null; then
+        info "Installing Skill Defender from ClawHub..."
+        clawhub install itsclawdbro/skill-defender --workdir "$PROJECT_DIR/skills"
+        info "Skill Defender installed"
+    else
+        warn "ClawHub CLI not available, skipping Skill Defender install"
+    fi
+}
+
 # --- Install methods ---
 
 install_native() {
     info "Installing OpenClaw globally via npm..."
     npm install -g openclaw@latest
     install_clawhub
+    install_clawshield
+    install_skill_defender
     info "Running OpenClaw onboarding..."
     openclaw onboard --install-daemon
 }
@@ -174,5 +204,6 @@ info "  1. Edit .env with your API key(s)"
 info "  2. Run 'openclaw doctor --fix' to verify your setup"
 info "  3. Browse skills: clawhub search <query>"
 info "  4. Install a skill: clawhub install <skill-name>"
-info "  5. Visit https://docs.openclaw.ai for configuration guides"
+info "  5. Scan skills for threats: ./scripts/scan-skills.sh"
+info "  6. Visit https://docs.openclaw.ai for configuration guides"
 echo ""

@@ -91,7 +91,33 @@ openclaw agent --message "Your task here" --thinking high
 openclaw message send --to "+1234567890" --message "Hello from OpenClaw"
 ```
 
-## Security Notes
+## Security
+
+### Skill Scanning
+
+Community skills from [ClawHub](https://clawhub.ai/) should be treated as untrusted code. This scaffold includes two layers of defense:
+
+**ClawShield** — CLI scanner that detects malicious patterns, data exfiltration, and prompt injection:
+
+```bash
+# Scan all installed skills
+./scripts/scan-skills.sh
+
+# Or scan directly
+clawshield scan ./skills --threshold high
+```
+
+**Skill Defender** — a ClawHub skill that scans from within OpenClaw itself. Installed automatically by the setup script, or manually:
+
+```bash
+clawhub install itsclawdbro/skill-defender
+```
+
+### Sandbox Mode
+
+Sandbox mode (`"mode": "docker"` in config) isolates skill execution in Docker containers, limiting file system and network access. Enabled by default in the example config.
+
+### General Notes
 
 - **Never commit `.env`** — it contains your API keys. The `.gitignore` already excludes it.
 - **Bind gateway to localhost** in production. Use a reverse proxy (nginx, Caddy) with TLS for remote access.

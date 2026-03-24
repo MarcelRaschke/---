@@ -59,16 +59,18 @@
     "load": {
       "extraDirs": ["./skills"]
     }
-    // Per-skill configuration example:
-    // "entries": {
-    //   "web-search": { "enabled": true },
-    //   "file-manager": { "enabled": true },
-    //   "code-runner": { "enabled": true, "env": { "SANDBOX": "docker" } }
-    // }
+    // Per-skill configuration:
+    "entries": {
+      // Skill Defender — scans installed skills for malicious patterns
+      "skill-defender": { "enabled": true }
+      // "web-search": { "enabled": true },
+      // "file-manager": { "enabled": true },
+      // "code-runner": { "enabled": true, "env": { "SANDBOX": "docker" } }
+    }
   },
 
-  // Sandbox Mode
+  // Sandbox Mode — isolates skill execution in Docker containers
   "sandbox": {
-    "mode": "off"
+    "mode": "docker"
   }
 }
