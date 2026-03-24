@@ -6,6 +6,7 @@
 # OpenClaw local data
 .openclaw/
 workspace/
+skills/
 
 # Node.js
 node_modules/

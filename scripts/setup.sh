@@ -66,11 +66,31 @@ setup_workspace() {
     info "Workspace directory ready"
 }
 
+# --- Setup skills directory ---
+
+setup_skills() {
+    mkdir -p "$PROJECT_DIR/skills"
+    info "Skills directory ready at $PROJECT_DIR/skills"
+}
+
+# --- Install ClawHub CLI ---
+
+install_clawhub() {
+    if command -v clawhub &>/dev/null; then
+        info "ClawHub CLI already installed ($(clawhub --version 2>/dev/null || echo 'unknown version'))"
+        return 0
+    fi
+    info "Installing ClawHub CLI..."
+    npm install -g clawhub
+    info "ClawHub CLI installed"
+}
+
 # --- Install methods ---
 
 install_native() {
     info "Installing OpenClaw globally via npm..."
     npm install -g openclaw@latest
+    install_clawhub
     info "Running OpenClaw onboarding..."
     openclaw onboard --install-daemon
 }
@@ -111,6 +131,7 @@ fi
 
 setup_env
 setup_workspace
+setup_skills
 
 # Build menu options dynamically based on available tools
 declare -A MENU_ACTIONS
@@ -151,5 +172,7 @@ echo ""
 info "Setup complete! Next steps:"
 info "  1. Edit .env with your API key(s)"
 info "  2. Run 'openclaw doctor --fix' to verify your setup"
-info "  3. Visit https://docs.openclaw.ai for configuration guides"
+info "  3. Browse skills: clawhub search <query>"
+info "  4. Install a skill: clawhub install <skill-name>"
+info "  5. Visit https://docs.openclaw.ai for configuration guides"
 echo ""
