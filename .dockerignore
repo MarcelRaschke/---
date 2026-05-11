@@ -1,0 +1,11 @@
+.git
+.github
+.env
+.env.local
+backups/
+*.md
+LICENSE
+Makefile
+Caddyfile
+systemd/
+monitoring/

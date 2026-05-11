@@ -72,6 +72,57 @@ OpenClaw supports communication through channels you already use:
 | Matrix | Supported |
 | IRC | Supported |
 
+## Makefile Commands
+
+If you have `make` installed, use these shortcuts:
+
+```bash
+make setup      # Create .env and workspace directory
+make start      # Start via Docker Compose
+make stop       # Stop containers
+make restart    # Restart containers
+make logs       # Tail logs
+make status     # Show container status
+make health     # Check gateway health endpoint
+make update     # Pull latest image and restart
+make clean      # Remove containers and workspace (destructive)
+```
+
+## Production Deployment
+
+For production use with TLS, use the production overlay:
+
+```bash
+# Place your TLS certificates
+mkdir -p nginx/certs
+cp /path/to/fullchain.pem nginx/certs/
+cp /path/to/privkey.pem nginx/certs/
+
+# Start with production config
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+This adds an nginx reverse proxy with HTTPS, restricts OpenClaw to localhost binding, and configures log rotation. See [`nginx/nginx.conf`](nginx/nginx.conf) for the proxy configuration.
+
+## Maintenance
+
+### Update
+
+```bash
+./scripts/update.sh       # Auto-detects Docker or native install
+# or
+make update               # Docker only
+```
+
+### Backup
+
+```bash
+./scripts/backup.sh                  # Backs up to ./backups/
+./scripts/backup.sh /path/to/dest    # Custom backup location
+```
+
+Keeps the last 10 backups automatically.
+
 ## Useful Commands
 
 ```bash
@@ -91,33 +142,49 @@ openclaw agent --message "Your task here" --thinking high
 openclaw message send --to "+1234567890" --message "Hello from OpenClaw"
 ```
 
-## Security
 
-### Skill Scanning
-
-Community skills from [ClawHub](https://clawhub.ai/) should be treated as untrusted code. This scaffold includes two layers of defense:
-
-**ClawShield** — CLI scanner that detects malicious patterns, data exfiltration, and prompt injection:
-
-```bash
-# Scan all installed skills
-./scripts/scan-skills.sh
-
-# Or scan directly
-clawshield scan ./skills --threshold high
-```
-
-**Skill Defender** — a ClawHub skill that scans from within OpenClaw itself. Installed automatically by the setup script, or manually:
-
-```bash
-clawhub install itsclawdbro/skill-defender
-```
-
-### Sandbox Mode
 
 Sandbox mode (`"mode": "docker"` in config) isolates skill execution in Docker containers, limiting file system and network access. Enabled by default in the example config.
 
 ### General Notes
+=======
+## Monitoring
+
+Optional Prometheus + Grafana stack for observability:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
+```
+
+- **Grafana**: http://localhost:3000 (admin/admin)
+- **Prometheus**: http://localhost:9090
+
+## Diagnostics
+
+Run the built-in doctor script to check your setup:
+
+```bash
+./scripts/doctor.sh
+```
+
+Checks: `.env` configuration, API keys, Docker/Node.js availability, port status, gateway health, and security posture.
+
+## Alternative: Caddy (Auto-TLS)
+
+Instead of nginx, use [Caddy](https://caddyserver.com/) for automatic HTTPS:
+
+```bash
+# Edit Caddyfile — replace your-domain.example.com with your domain
+caddy run --config Caddyfile
+```
+
+Caddy automatically obtains and renews Let's Encrypt certificates.
+
+## Systemd Service (Linux)
+
+For native installs on Linux, a systemd unit file is included:
+
+ementpenclaw-wdfHJ
 
 - **Never commit `.env`** — it contains your API keys. The `.gitignore` already excludes it.
 - **Bind gateway to localhost** in production. Use a reverse proxy (nginx, Caddy) with TLS for remote access.
