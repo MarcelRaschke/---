@@ -52,11 +52,25 @@
   // Skills Configuration
   "skills": {
     "enabled": true,
-    "autoActivate": true
+    "autoActivate": true,
+    // ClawHub registry for community skills
+    "registry": "https://registry.clawhub.ai",
+    // Load skills from the workspace skills directory
+    "load": {
+      "extraDirs": ["./skills"]
+    }
+    // Per-skill configuration:
+    "entries": {
+      // Skill Defender — scans installed skills for malicious patterns
+      "skill-defender": { "enabled": true }
+      // "web-search": { "enabled": true },
+      // "file-manager": { "enabled": true },
+      // "code-runner": { "enabled": true, "env": { "SANDBOX": "docker" } }
+    }
   },
 
-  // Sandbox Mode
+  // Sandbox Mode — isolates skill execution in Docker containers
   "sandbox": {
-    "mode": "off"
+    "mode": "docker"
   }
 }

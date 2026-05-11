@@ -142,6 +142,12 @@ openclaw agent --message "Your task here" --thinking high
 openclaw message send --to "+1234567890" --message "Hello from OpenClaw"
 ```
 
+
+
+Sandbox mode (`"mode": "docker"` in config) isolates skill execution in Docker containers, limiting file system and network access. Enabled by default in the example config.
+
+### General Notes
+=======
 ## Monitoring
 
 Optional Prometheus + Grafana stack for observability:
@@ -178,36 +184,7 @@ Caddy automatically obtains and renews Let's Encrypt certificates.
 
 For native installs on Linux, a systemd unit file is included:
 
-```bash
-sudo cp systemd/openclaw.service /etc/systemd/system/
-sudo useradd -r -m -s /bin/bash openclaw  # if user doesn't exist
-sudo systemctl daemon-reload
-sudo systemctl enable --now openclaw
-journalctl -u openclaw -f  # view logs
-```
-
-## CI/CD
-
-GitHub Actions workflows are included in `.github/workflows/`:
-
-- **`validate.yml`** — validates Docker Compose files, nginx config, shell scripts, and checks `.env.example` for leaked secrets on push/PR
-- **`healthcheck.yml`** — scheduled health check (every 6 hours) that spins up OpenClaw in Docker and verifies endpoints
-
-## Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| Gateway won't start | Run `./scripts/doctor.sh` to diagnose |
-| Port 18789 already in use | Change `OPENCLAW_GATEWAY_PORT` in `.env` |
-| Docker permission denied | Add your user to the docker group: `sudo usermod -aG docker $USER` |
-| Container keeps restarting | Check logs: `make logs` or `docker compose logs` |
-| Health check fails | Verify API key is set and valid in `.env` |
-| WebSocket disconnects | Ensure `proxy_read_timeout` is high in nginx config |
-| Bind mount permission errors | The Docker image runs as uid 1000. Fix with: `chown -R 1000:1000 workspace/` |
-| Can't reach gateway from LAN | Set `OPENCLAW_GATEWAY_BIND=lan` in `.env` |
-| `alpine/openclaw:latest` broken | Try `alpine/openclaw:main` as a fallback |
-
-## Security Notes
+ementpenclaw-wdfHJ
 
 - **Never commit `.env`** — it contains your API keys. The `.gitignore` already excludes it.
 - **Bind gateway to localhost** in production. Use a reverse proxy (nginx, Caddy) with TLS for remote access.
