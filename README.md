@@ -144,10 +144,42 @@ openclaw message send --to "+1234567890" --message "Hello from OpenClaw"
 
 
 
+## Security
+
+### Skill Scanning
+
+Community skills from [ClawHub](https://clawhub.ai/) should be treated as untrusted code. This scaffold includes three layers of defense:
+
+**ClawShield** (local) — CLI scanner that detects malicious patterns, data exfiltration, and prompt injection:
+
+```bash
+./scripts/scan-skills.sh              # Local + cloud scan
+clawshield scan ./skills --threshold high   # Direct local scan
+```
+
+**ClawDefend** (cloud) — SaaS scanner with AST parsing, regex matching, and LLM-powered intent detection. Set `CLAWDEFEND_API_KEY` in `.env` to enable:
+
+```bash
+# Get a free API key (5 scans/month) at https://www.clawdefend.com/
+# The scan script uses it automatically when set
+./scripts/scan-skills.sh
+```
+
+A GitHub Actions workflow (`.github/workflows/clawdefend.yml`) gates PRs that modify `skills/` — add `CLAWDEFEND_API_KEY` to your repo secrets to enable cloud scanning in CI.
+
+**Skill Defender** (runtime) — a ClawHub skill that scans from within OpenClaw itself. Installed automatically by the setup script.
+
+### Sandbox Mode
+
 Sandbox mode (`"mode": "docker"` in config) isolates skill execution in Docker containers, limiting file system and network access. Enabled by default in the example config.
 
 ### General Notes
-=======
+
+- **Never commit `.env`** — it contains your API keys. The `.gitignore` already excludes it.
+- **Bind gateway to localhost** in production. Use a reverse proxy (nginx, Caddy) with TLS for remote access.
+- Use `SecretRef` for API keys in shared/team environments.
+- Review the [official security docs](https://docs.openclaw.ai/security) for production hardening.
+
 ## Monitoring
 
 Optional Prometheus + Grafana stack for observability:
@@ -179,17 +211,6 @@ caddy run --config Caddyfile
 ```
 
 Caddy automatically obtains and renews Let's Encrypt certificates.
-
-## Systemd Service (Linux)
-
-For native installs on Linux, a systemd unit file is included:
-
-ementpenclaw-wdfHJ
-
-- **Never commit `.env`** — it contains your API keys. The `.gitignore` already excludes it.
-- **Bind gateway to localhost** in production. Use a reverse proxy (nginx, Caddy) with TLS for remote access.
-- Use `SecretRef` for API keys in shared/team environments.
-- Review the [official security docs](https://docs.openclaw.ai/security) for production hardening.
 
 ## Resources
 

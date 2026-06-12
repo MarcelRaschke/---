@@ -1,0 +1,70 @@
+name: ClawDefend Skill Security Scan
+
+on:
+  push:
+    paths: ['skills/**']
+  pull_request:
+    paths: ['skills/**']
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install ClawShield
+        run: npm install -g clawshield
+
+      - name: ClawShield local scan
+        run: |
+          if [ -d skills ] && [ "$(ls -A skills 2>/dev/null)" ]; then
+            clawshield scan ./skills --threshold high --format json > clawshield-report.json
+            cat clawshield-report.json
+          else
+            echo '{"findings":[]}' > clawshield-report.json
+            echo "No skills to scan"
+          fi
+
+      - name: ClawDefend cloud scan
+        if: env.CLAWDEFEND_API_KEY != ''
+        env:
+          CLAWDEFEND_API_KEY: ${{ secrets.CLAWDEFEND_API_KEY }}
+        run: |
+          if [ ! -d skills ] || [ -z "$(ls -A skills 2>/dev/null)" ]; then
+            echo "No skills to scan"
+            exit 0
+          fi
+
+          tar czf /tmp/skills.tar.gz -C skills .
+
+          RESPONSE=$(curl -sf -X POST \
+            -H "Authorization: Bearer $CLAWDEFEND_API_KEY" \
+            -H "Content-Type: application/gzip" \
+            --data-binary @/tmp/skills.tar.gz \
+            "https://api.clawdefend.com/v1/scan")
+
+          echo "$RESPONSE" | python3 -m json.tool | tee clawdefend-report.json
+
+          CRITICAL=$(echo "$RESPONSE" | python3 -c "
+          import sys, json
+          r = json.load(sys.stdin)
+          print(sum(1 for f in r.get('findings', []) if f.get('severity') in ('critical', 'high')))
+          ")
+
+          if [ "$CRITICAL" -gt 0 ]; then
+            echo "::error::ClawDefend found $CRITICAL critical/high severity findings"
+            exit 1
+          fi
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports
+          path: |
+            clawshield-report.json
+            clawdefend-report.json
