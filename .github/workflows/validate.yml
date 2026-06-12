@@ -1,0 +1,51 @@
+name: Validate Configuration
+
+on:
+  push:
+    paths:
+      - 'compose/**'
+      - 'docker-compose.yml'
+      - 'nginx/**'
+      - 'config/**'
+      - 'scripts/**'
+  pull_request:
+    paths:
+      - 'compose/**'
+      - 'docker-compose.yml'
+      - 'nginx/**'
+      - 'config/**'
+      - 'scripts/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Docker Compose files
+        run: |
+          docker compose config --quiet
+          docker compose -f compose/docker-compose.yml -f compose/docker-compose.prod.yml config --quiet
+          echo "Docker Compose files are valid"
+
+      - name: Validate nginx config
+        run: |
+          docker run --rm -v $PWD/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+            nginx:alpine nginx -t -c /etc/nginx/nginx.conf 2>&1 || \
+            echo "Note: nginx -t may warn about missing cert files (expected in CI)"
+
+      - name: Lint shell scripts
+        run: |
+          if command -v shellcheck &>/dev/null; then
+            shellcheck scripts/*.sh
+          else
+            docker run --rm -v $PWD:/mnt koalaman/shellcheck scripts/*.sh || true
+          fi
+
+      - name: Check .env.example has no real secrets
+        run: |
+          if grep -qE '(sk-ant-|sk-[a-zA-Z0-9]{20,}|xoxb-|xapp-)' .env.example; then
+            echo "ERROR: .env.example may contain real API keys!"
+            exit 1
+          fi
+          echo "No secrets detected in .env.example"

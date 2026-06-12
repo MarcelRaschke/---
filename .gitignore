@@ -1,0 +1,32 @@
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+
+# OpenClaw local data
+.openclaw/
+workspace/
+backups/
+skills/
+
+# TLS certificates
+nginx/certs/
+
+# Monitoring data
+prometheus_data/
+grafana_data/
+
+# Node.js
+node_modules/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

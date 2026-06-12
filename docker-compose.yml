@@ -1,0 +1,4 @@
+# Root convenience wrapper — delegates to compose/docker-compose.yml
+# Requires Docker Compose 2.20+
+include:
+  - compose/docker-compose.yml
