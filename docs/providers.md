@@ -1,6 +1,6 @@
-# AI Providers: Mistral & Gemma
+# AI Providers
 
-OpenClaw follows a Bring-Your-Own-Model design. This scaffold ships ready to use **Mistral** and **Gemma** models three ways — pick one.
+OpenClaw follows a Bring-Your-Own-Model design. This scaffold ships ready to use four models via the Cloudflare Worker gateway — **Mistral Small**, **Gemma 3**, **Hermes SuperAgent**, and **π Coding Agent** — with Mistral and Gemma also available directly or locally. Pick one of the three connection methods below.
 
 ## Option A — Cloudflare Worker gateway (recommended)
 
@@ -33,6 +33,22 @@ OpenClaw ──(bearer token)──▶ Worker ──(AI binding)──▶ Worker
 | `gemma-3-12b` | `@cf/google/gemma-3-12b-it` |
 | `hermes-superagent` | `@hf/nousresearch/hermes-2-pro-mistral-7b` (function calling) |
 | `pi-coding-agent` | `@cf/qwen/qwen2.5-coder-32b-instruct` (coding) |
+
+### The four models
+
+- **`mistral-small`** — Mistral Small 3.1 (24B). A strong, all-round instruct
+  model with a 128K-token context window and vision support. The default; good
+  balance of quality, speed, and cost for general chat and reasoning.
+- **`gemma-3-12b`** — Google Gemma 3 (12B). Open-weight, multilingual (140+
+  languages), 128K context, with vision. Lighter than Mistral Small — a fast,
+  economical pick for everyday tasks and non-English use.
+- **`hermes-superagent`** — Nous Research Hermes 2 Pro (Mistral 7B). Tuned for
+  **function/tool calling and JSON mode**, which makes it the best fit for
+  agentic workflows where the model must call skills and return structured
+  output. (Cloudflare marks it deprecated 5/30/2026 — swap when it's removed.)
+- **`pi-coding-agent`** — Qwen2.5-Coder (32B). A **code-specialized** model
+  (32K context) for writing, explaining, and refactoring code across many
+  languages. Reach for this on programming tasks; use the others for general chat.
 
 See [`cf-worker/README.md`](../cf-worker/README.md) for full details.
 
