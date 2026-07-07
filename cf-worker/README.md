@@ -12,6 +12,8 @@ OpenClaw ──(bearer token)──▶ Worker ──(AI binding)──▶ Worker
 |-------------------------|-----------------------------|
 | `mistral-small` | `@cf/mistralai/mistral-small-3.1-24b-instruct` |
 | `gemma-3-12b` | `@cf/google/gemma-3-12b-it` |
+| `hermes-superagent` | `@hf/nousresearch/hermes-2-pro-mistral-7b` |
+| `pi-coding-agent` | `@cf/qwen/qwen2.5-coder-32b-instruct` |
 
 Add or change aliases in [`src/index.js`](src/index.js) (`MODEL_ALIASES`). You can also pass a raw `@cf/...` ID directly.
 

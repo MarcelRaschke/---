@@ -17,6 +17,16 @@ const MODEL_ALIASES = {
   "mistral-small-3.1-24b-instruct": "@cf/mistralai/mistral-small-3.1-24b-instruct",
   "gemma-3-12b": "@cf/google/gemma-3-12b-it",
   "gemma-3-12b-it": "@cf/google/gemma-3-12b-it",
+
+  // Hermes SuperAgent — Nous Research Hermes 2 Pro (function calling + JSON mode).
+  // NOTE: Cloudflare marks this model deprecated (5/30/2026); if it stops
+  // resolving, swap the target for the current Hermes/Nous model on Workers AI.
+  "hermes-superagent": "@hf/nousresearch/hermes-2-pro-mistral-7b",
+  "hermes-2-pro-mistral-7b": "@hf/nousresearch/hermes-2-pro-mistral-7b",
+
+  // π Coding Agent — Qwen2.5-Coder 32B, strongest coding model on Workers AI.
+  "pi-coding-agent": "@cf/qwen/qwen2.5-coder-32b-instruct",
+  "qwen2.5-coder-32b-instruct": "@cf/qwen/qwen2.5-coder-32b-instruct",
 };
 
 const DEFAULT_MODEL = "mistral-small";

@@ -31,6 +31,8 @@ OpenClaw ──(bearer token)──▶ Worker ──(AI binding)──▶ Worker
 |-------|---------------|
 | `mistral-small` | `@cf/mistralai/mistral-small-3.1-24b-instruct` |
 | `gemma-3-12b` | `@cf/google/gemma-3-12b-it` |
+| `hermes-superagent` | `@hf/nousresearch/hermes-2-pro-mistral-7b` (function calling) |
+| `pi-coding-agent` | `@cf/qwen/qwen2.5-coder-32b-instruct` (coding) |
 
 See [`cf-worker/README.md`](../cf-worker/README.md) for full details.
 
