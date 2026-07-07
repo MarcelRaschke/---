@@ -42,7 +42,10 @@ cp .env.example .env
 cp config/openclaw.config.example.json5 config/openclaw.config.json5
 ```
 
-See [`.env.example`](.env.example) for all environment variables.
+See [`.env.example`](.env.example) for all environment variables. The example
+config is wired for **Mistral** and **Gemma** models — see
+[docs/providers.md](docs/providers.md) for the three ways to connect them
+(Cloudflare Worker gateway, direct provider APIs, or local Ollama).
 
 ## Integrations
 
@@ -81,6 +84,8 @@ make clean        # Remove containers and workspace (destructive)
 
 ## Documentation
 
+- [AI Providers](docs/providers.md) — Mistral & Gemma via Cloudflare Worker, direct API, or Ollama
+- [Cloudflare Worker Gateway](cf-worker/README.md) — OpenAI-compatible Workers AI proxy
 - [Production Deployment](docs/production.md) — nginx, Caddy, systemd
 - [Monitoring](docs/monitoring.md) — Prometheus + Grafana
 - [CI/CD](docs/ci-cd.md) — GitHub Actions workflows

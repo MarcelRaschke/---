@@ -1,0 +1,19 @@
+name = "openclaw-ai-gateway"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+# Cloudflare Workers AI binding. Gives the Worker access to env.AI.run(model, ...)
+# without embedding your account ID or API token in the request path.
+[ai]
+binding = "AI"
+
+# Auth token OpenClaw uses as its bearer token. Set it as a secret, do NOT hardcode:
+#   wrangler secret put GATEWAY_TOKEN
+#
+# For local dev, put it in .dev.vars (copy from .dev.vars.example).
+# [vars]
+# GATEWAY_TOKEN = "set-via-secret-in-production"
+
+# Optional: observability
+# [observability]
+# enabled = true

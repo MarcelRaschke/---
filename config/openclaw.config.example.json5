@@ -1,0 +1,81 @@
+// OpenClaw Configuration
+// Copy this file to openclaw.config.json5 and customize as needed.
+// See: https://docs.openclaw.ai/configuration
+//
+// This example is set up to use Mistral and Gemma models. There are two ways
+// to reach them — pick whichever suits you:
+//
+//   A) Via the bundled Cloudflare Worker gateway (cf-worker/) backed by
+//      Cloudflare Workers AI. Recommended: one endpoint, no per-provider keys.
+//   B) Directly against each provider's own API (Mistral La Plateforme,
+//      Google AI Studio for Gemma/Gemini).
+{
+  // Default model to use. Change to "gemma-3-12b" to default to Gemma.
+  "models": {
+    "default": "cloudflare:mistral-small",
+
+    "providers": {
+      // --- Option A: Cloudflare Worker gateway (Mistral + Gemma) ---------------
+      // OpenAI-compatible endpoint served by cf-worker/. Point baseUrl at your
+      // deployed Worker (…workers.dev/v1). Auth uses the GATEWAY_TOKEN you set
+      // with `wrangler secret put GATEWAY_TOKEN`.
+      "cloudflare": {
+        "type": "openai",
+        "baseUrl": "${CF_WORKER_URL}",
+        "apiKey": "${CF_WORKER_TOKEN}",
+        "models": [
+          "mistral-small",   // -> @cf/mistralai/mistral-small-3.1-24b-instruct
+          "gemma-3-12b"      // -> @cf/google/gemma-3-12b-it
+        ]
+      },
+
+      // --- Option B1: Mistral La Plateforme (direct) --------------------------
+      // Uncomment to call Mistral's own OpenAI-compatible API directly.
+      // "mistral": {
+      //   "type": "openai",
+      //   "baseUrl": "https://api.mistral.ai/v1",
+      //   "apiKey": "${MISTRAL_API_KEY}",
+      //   "models": ["mistral-small-latest", "mistral-large-latest"]
+      // },
+
+      // --- Option B2: Google AI Studio (Gemma / Gemini, direct) ---------------
+      // Gemma open models are served through Google's Gemini API surface.
+      // "google": {
+      //   "type": "google",
+      //   "apiKey": "${GOOGLE_API_KEY}",
+      //   "models": ["gemma-3-12b-it", "gemini-1.5-flash"]
+      // },
+
+      // --- Option C: Local/offline via Ollama --------------------------------
+      // "ollama": {
+      //   "type": "openai",
+      //   "baseUrl": "http://localhost:11434/v1",
+      //   "models": ["mistral", "gemma3"]
+      // }
+    }
+  },
+
+  // Gateway Settings
+  "gateway": {
+    "port": 18789,
+    "bind": "localhost"
+  },
+
+  // Channel Integrations — uncomment and configure the ones you use.
+  "channels": {
+    // "telegram": { "enabled": true, "botToken": "your-telegram-bot-token" },
+    // "slack": { "enabled": true, "appToken": "xapp-...", "botToken": "xoxb-..." },
+    // "discord": { "enabled": true, "botToken": "your-discord-bot-token" }
+  },
+
+  // Skills Configuration
+  "skills": {
+    "enabled": true,
+    "autoActivate": true
+  },
+
+  // Sandbox Mode — isolates skill execution in Docker containers.
+  "sandbox": {
+    "mode": "off"
+  }
+}

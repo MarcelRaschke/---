@@ -1,0 +1,3 @@
+# Copy to .dev.vars for local `wrangler dev`. Never commit .dev.vars.
+# In production, set this with: wrangler secret put GATEWAY_TOKEN
+GATEWAY_TOKEN=change-me-to-a-long-random-string

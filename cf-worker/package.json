@@ -1,0 +1,16 @@
+{
+  "name": "openclaw-ai-gateway",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OpenAI-compatible Cloudflare Worker gateway to Workers AI (Mistral, Gemma) for OpenClaw",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "check": "node --check src/index.js"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
