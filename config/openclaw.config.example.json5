@@ -1,0 +1,33 @@
+{
+  // OpenClaw Configuration
+  // Copy to openclaw.config.json5 and edit to match your setup.
+
+  "gateway": {
+    "port": 18789,
+    "bind": "localhost"
+  },
+
+  "ai": {
+    // Default provider: "anthropic", "openai", "openrouter", "google", "ollama"
+    "provider": "anthropic",
+    "model": "claude-sonnet-4-20250514"
+  },
+
+  "skills": {
+    "load": {
+      "extraDirs": ["./skills"]
+    },
+    "entries": {
+      "skill-defender": {
+        "enabled": true
+      }
+    },
+    "sandbox": {
+      "mode": "docker"
+    }
+  },
+
+  "clawhub": {
+    "registry": "https://registry.clawhub.ai"
+  }
+}
