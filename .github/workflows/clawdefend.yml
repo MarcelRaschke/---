@@ -30,7 +30,7 @@ jobs:
           fi
 
       - name: ClawDefend cloud scan
-        if: env.CLAWDEFEND_API_KEY != ''
+        if: ${{ env.CLAWDEFEND_API_KEY != '' }}
         env:
           CLAWDEFEND_API_KEY: ${{ secrets.CLAWDEFEND_API_KEY }}
         run: |
