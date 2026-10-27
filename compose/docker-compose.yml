@@ -4,6 +4,7 @@ services:
     container_name: openclaw
     restart: unless-stopped
     init: true
+    command: ["node", "openclaw.mjs", "gateway", "--allow-unconfigured", "--bind", "lan"]
     env_file: ../.env
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
